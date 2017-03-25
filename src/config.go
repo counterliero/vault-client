@@ -30,7 +30,7 @@ func LoadConfig() (Config, error) {
 	}
 
 	// read configuration from home dir
-	configFile, err := ioutil.ReadFile(usr.HomeDir + "/.vaultrc")
+	configFile, err := ioutil.ReadFile(usr.HomeDir + "/.vault.json")
 	if err != nil {
 		return config, nil
 	}
