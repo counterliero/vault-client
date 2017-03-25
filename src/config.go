@@ -2,16 +2,16 @@ package main
 
 import (
 	"os/user"
-	"log"
 	"io/ioutil"
 	"encoding/json"
 )
 
 type Config struct {
-	Server string `json:"server"`
-	Port   int    `json:"port"`
-	Token  string `json:"token"`
-	TLS    bool   `json:"tls"`
+	Server   string `json:"server"`
+	Port     int    `json:"port"`
+	Token    string `json:"token"`
+	TLS      bool   `json:"tls"`
+	Insecure bool   `json:"insecure"`
 }
 
 func LoadConfig() (Config, error) {
@@ -19,21 +19,18 @@ func LoadConfig() (Config, error) {
 	config := Config{
 		Server: "localhost",
 		Port: 8200,
-		Token: "some-token",
-		TLS: true,
+		Insecure: true,
 	}
 
 	// get current user
 	usr, err := user.Current()
 	if err != nil {
-		log.Fatal(err)
 		return config, err
 	}
 
 	// read configuration from home dir
 	configFile, err := ioutil.ReadFile(usr.HomeDir + "/.vaultrc")
 	if err != nil {
-		log.Print("Did not find %s/.vaultrc, using default config.", usr.HomeDir)
 		return config, nil
 	}
 
