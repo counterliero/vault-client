@@ -1,15 +1,19 @@
 package main
 
 import (
-	"log"
 	"flag"
+	"fmt"
+	"log"
+	"net/http"
 	"os"
+	vault "github.com/hashicorp/vault/api"
+	"crypto/tls"
 )
 
 func main() {
 	config, err := LoadConfig()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintln(os.Stderr, err)
 	}
 
 	// command line options
@@ -20,9 +24,46 @@ func main() {
 	flag.BoolVar(&config.Insecure, "insecure", config.Insecure, "Don't verify SSL/TLS connections")
 	flag.Parse()
 	if len(config.Token) == 0 {
-		log.Fatal("Missing mandatory parameter: token")
+		fmt.Fprintln(os.Stderr, "Missing mandatory parameter: token")
 		os.Exit(1)
 	}
 
-	log.Print(config)
+	client, err := VaultClient(config)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+	}
+
+	log.Print(client.Address())
+}
+
+func VaultClient(config Config) (*vault.Client, error) {
+	var protocol string
+	if config.TLS {
+		protocol = "https"
+	} else {
+		protocol = "http"
+	}
+
+	transport := &http.Transport{}
+	if !config.Insecure {
+		transport = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+	}
+
+	// Generate a config for the Vault client
+	vaultConfig := vault.Config{
+		Address: fmt.Sprintf("%v://%v:%v", protocol, config.Server, config.Port),
+		HttpClient: &http.Client{Transport: transport },
+	}
+
+	// initialize the client
+	vaultClient, err := vault.NewClient(&vaultConfig)
+	if err != nil {
+		return vaultClient, nil
+	}
+	vaultClient.SetToken(config.Token)
+	vaultClient.Auth()
+
+	return vaultClient, nil
 }

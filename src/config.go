@@ -19,7 +19,8 @@ func LoadConfig() (Config, error) {
 	config := Config{
 		Server: "localhost",
 		Port: 8200,
-		Insecure: true,
+		TLS: true,
+		Insecure: false,
 	}
 
 	// get current user
