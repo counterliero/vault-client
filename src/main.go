@@ -1,13 +1,13 @@
 package main
 
 import (
+	"crypto/tls"
 	"flag"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 	vault "github.com/hashicorp/vault/api"
-	"crypto/tls"
 )
 
 func main() {
