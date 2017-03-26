@@ -4,7 +4,7 @@ Just a simple client to read secrets from HashiCorp's Vault.
 
 ## Configuration
 
-Default configuration is read from ```~/.vault.json```:
+Configuration is read from ```~/.vault.json```:
 
 ```json
 {
@@ -15,8 +15,19 @@ Default configuration is read from ```~/.vault.json```:
   "insecure": false
 }
 ```
-
 Configration is also possible via CLI parameters.
+
+If there is no configuration file and nothing is passed via CLI, the default settings will be used:
+
+```json
+{
+  "server": "localhost",
+  "port": 8200,
+  "tls": true,
+  "insecure": false
+}
+```
+
 
 ## Usage
 
