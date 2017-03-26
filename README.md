@@ -6,7 +6,7 @@ Just a simple client to read secrets from HashiCorp's Vault.
 
 Default configuration is read from ```~/.vault.json```:
 
-```
+```json
 {
   "server": "some-vault-host.somewhere.com",
   "port": 443,
@@ -22,7 +22,19 @@ Configration is also possible via CLI parameters.
 
 To read a secret, do something like this:
 
-```vlt --secret "path/to/secret" --key "some-key"```
+```bash
+vlt --secret "path/to/secret" --key "some-key"
+```
+
+If you don't use a configuration file, you can pass all available settings as CLI parameter:
+
+```bash
+vlt --server "some-vault.secure.tld" \
+    --port 443 \
+    --token "some-token" \
+    --secret "some/secret/to/read" \
+    --key "password"
+```
 
 ## Build
 
